@@ -25,5 +25,6 @@ if( $validator->isValidPassword($submittedPassword, 'download') ) {
     exit;
 } else {
     header("HTTP/1.1 401 Unauthorized");
-    exit;
+    readfile("index.php");
+    exit();
 }

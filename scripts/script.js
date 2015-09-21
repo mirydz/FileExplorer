@@ -12,14 +12,15 @@ function processData(data) {
     };
     
     var transform = function(el) {
-        var nameLink = "<a href='#' class='file-download'>"+el.name+"</a>";
-
+        var downloadLink = "<a href='#' class='file-download'>"+el.name+"</a>";
+        var deleteLink = "<a href='#' class='file-delete'>"+"X"+"</a>";
+        
         var filesListElement = [];
         filesListElement.push(getExtension(el.name));
-        filesListElement.push(nameLink);
+        filesListElement.push(downloadLink);
         filesListElement.push(getDate(el.time));
         filesListElement.push(el.size);
-        filesListElement.push("X");
+        filesListElement.push(deleteLink);
         return filesListElement;
     };
     
@@ -36,68 +37,92 @@ function processData(data) {
 }
  
 function populateTable(files) {
+    var table = $('#table')[0];
+    if ( $.fn.dataTable.isDataTable( table ) ) {
+        $(table).DataTable().destroy();
+        $(table).html();
+    }
     $('#table').dataTable( {
         "data": files,
         "columns": [
             { "title": "Type", "class": "filestable-extension" },
             { "title": "Name", "class": "filestable-filename" },
             { "title": "Date", "class": "filestable-filedate" },
-            { "title": "Size", "class": "filestable-fileize"},
+            { "title": "Size (B)", "class": "filestable-fileize"},
             { "title": "Delete", "class": "filestable-deletefile" }
         ]
     } );  
 }
  
 function attachEvents() {
-    $('.file-download').on('click', function() {
+    $('.file-download').on('click', function prepareDownloadModal() {
         var fileName = $(this).text();
         $('#modal-action-type').text("download");
-        $('#action-button').attr("data-action", "download").text("Download");
         $('#current-file').text(fileName);
+        $('#action-button').attr("data-action", "download").text("Download");
+        
+        $('#action-form').attr('action', 'download.php');
         $('#action-file').val(fileName);
-        $('#action-modal').modal();
+        $('#action-type').val("download");
+        
+        $('#action-modal').modal('show');
     });
-
+    
+    $('.file-delete').on("click", function prepareDeleteModal() {
+        var fileName = $(this).parents("tr").find(".file-download").text()
+        $('#modal-action-type').text("delete");
+        $('#current-file').text(fileName);
+        $('#action-button').attr("data-action", "delete").text("Delete");
+        
+        $('#action-form').attr('action', 'delete.php');
+        $('#action-file').val(fileName);
+        $('#action-type').val("delete");
+        
+        $('#action-modal').modal('show');
+    });
     
     $('#action-button').on('click', function() {
-        var action = $(this).attr('data-action');
-        var requestedFile = $('#current-file').text();
-        if(action === "download")
-            $('#action-form').submit();
+        submitRequest();
+        $('action-password').val("");
+        $('#action-modal').modal('hide');
     });
 }
 
-function downloadFile(fileName) {
-    var password = $('#action-password').val();
+function submitRequest() {
+    var $form = $('#action-form');
+    var action = $('#action-type').val()
     
-    $.ajax({
-        type: "POST",
-        dataType: 'json',
-        url: '/download.php',
-        data: {file: fileName, password: password },
-        success: function(resp) {
-            
-        },
-        error: function() {
-            console.log("download went wrong");
-        }
-    });
-    
+    if (action === 'download') {
+        $form.submit();
+    }
+    else {
+        var url = $form.attr("action");
+        var data = $form.serialize();
+        
+        $.post(url, data, function (resp) {
+            fetchListOfFiles();
+        })
+    }
 }
  
-$(document).ready(function() {
+ function fetchListOfFiles() {
     $.ajax({
-          type: 'GET',
-          dataType: 'json',
-          url: 'index.php',
-          success: function(resp) {
-            var data = resp;
+        type: 'GET',
+        dataType: 'json',
+        url: 'start.php',
+        success: function(data) {
             console.log(data);
             processData(data);
-          },
-          error: function() {
+        },
+            error: function() {
             console.log("something wrong");
-          }
+        }
     });
+ }
+ 
+ var ListOfFiles = [];
+ 
+$(document).ready(function() {
+    fetchListOfFiles();
     
 });

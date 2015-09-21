@@ -38,10 +38,8 @@ class FileScanner
 						"path" => $dir . '/' . $file,
 						"time" => filemtime($dir . '/' . $file),
 						"size" => filesize($dir . '/' . $file), // Gets the size of this file
-						"ext"  => pathinfo($file, PATHINFO_EXTENSION),
-						"isAllowed" => $isAllowed
+						"ext"  => pathinfo($file, PATHINFO_EXTENSION)
 					);
-				//}
 			}
 		
 		}
@@ -51,11 +49,6 @@ class FileScanner
 			
 	private function isAllowedFile($fileName) 
 	{
-		// $ext = pathinfo($fileName, PATHINFO_EXTENSION);
-		// $arr = array('txt', 'pdf', 'doc', 'zip', 'rar', '7z');
-		// $isAllowed = in_array($ext, $arr);
-			//return true;
-		//else return false;
 		$ext = pathinfo($fileName, PATHINFO_EXTENSION);
 		return in_array($ext, $this->allowedFileTypes);
 	}

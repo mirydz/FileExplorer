@@ -1,7 +1,7 @@
 <?php
-function __autoload($class_name) {
-    include $class_name . '.php';
-}
+   
+include 'FileScanner.php';
+include 'PasswordValidator.php';
 
 class ActionHandler {
     public function __construct() {
@@ -13,7 +13,9 @@ class ActionHandler {
         $requestedFileFullpath = Config::$workDir . '/' . $requestedFileNameSanitized;
         
         $validator = new PasswordValidator();
+
     }
+    
     
     public function handleRequest($requestedActionType) {
         switch($requestedActionType)
