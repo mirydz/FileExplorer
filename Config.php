@@ -10,4 +10,20 @@ class Config
 	public static $downloadPassword = "downpass";
 	public static $uploadPassword = "uppass";
 	public static $deletePassword = "delpass";
+	
+	public static function returnHtmlWithMsg($msg) {
+		echo '<!DOCTYPE html>
+        <html lang="en">
+          <head>
+            <meta charset="utf-8">
+            <title>' . $msg . '</title>
+          </head>
+          <body>
+            <script>
+                window.history.back();
+            </script>' 
+            . $msg . ' Redirecting back...
+          </body>
+        </html>';
+	}
 }

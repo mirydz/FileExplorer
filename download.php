@@ -6,12 +6,12 @@ function __autoload($class_name) {
 $requestedFileName = $_POST['file'];
 $submittedPassword = $_POST['password'];
 
-$requestedFileNameSanitized = pathinfo($requestedFileName, PATHINFO_BASENAME);
-$requestedFileFullpath = Config::$workDir . '/' . $requestedFileNameSanitized;
-
 $validator = new PasswordValidator();
 
 if( $validator->isValidPassword($submittedPassword, 'download') ) {
+    $requestedFileNameSanitized = pathinfo($requestedFileName, PATHINFO_BASENAME);
+    $requestedFileFullpath = Config::$workDir . '/' . $requestedFileNameSanitized;
+    
     header('Pragma: public');
     header('Expires: 0');
     header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
@@ -24,7 +24,5 @@ if( $validator->isValidPassword($submittedPassword, 'download') ) {
     readfile($requestedFileFullpath);
     exit;
 } else {
-    header("HTTP/1.1 401 Unauthorized");
-    readfile("index.php");
-    exit();
+    Config::returnHtmlWithMsg("Wrong Password!");
 }

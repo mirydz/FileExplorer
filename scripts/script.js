@@ -90,7 +90,7 @@ function attachEvents() {
         $('#file-picker').remove();
         $('#modal-action-type').text("upload");
         $('#current-file').text("");
-        var fileInput = '<input type="file" id="file-picker" name="file-upload"/>';
+        var fileInput = '<input type="file" id="file-picker" name="file"/>';
         $('#action-form').prepend(fileInput);
         $('#action-button').attr("data-action", "upload").text("Upload");
         

@@ -16,6 +16,6 @@ if( $validator->isValidPassword($submittedPassword, $requestedActionType) ) {
     unlink($requestedFileFullpath);
 } else {
     header("HTTP/1.1 401 Unauthorized");
-    readfile("index.php");
+    readfile("start.php");
     exit;
 }
