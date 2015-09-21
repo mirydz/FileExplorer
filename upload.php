@@ -21,10 +21,17 @@ if( $validator->isValidPassword($submittedPassword, "upload") ) {
         exit;
     }
     
+    $ext = pathinfo($_FILES['file']['name'], PATHINFO_EXTENSION);
+    if (! in_array($ext, Config::$allowedFileTypes)) {
+        $msg = "File type not allowed.";
+        Config::returnHtmlWithMsg("$msg");
+        exit;
+    }
+    
     $uploadDir = Config::$workDir;
     $uploadedFileNewFullPath = $uploadDir . '/' . basename($_FILES['file']['name']);
 
-    //echo '<pre>';
+   
     if (move_uploaded_file($_FILES['file']['tmp_name'], $uploadedFileNewFullPath)) {
         $msg = "File succesfully uploaded!";
     } else {
@@ -32,18 +39,7 @@ if( $validator->isValidPassword($submittedPassword, "upload") ) {
         Config::returnHtmlWithMsg("$msg");
         exit;
     }
-    
-    // echo 'Here is some more debugging info:';
-    // echo $submittedPassword;
-    // print_r($_POST);
-    // echo '<br/>';
-    // print_r($submittedPassword)
-    // echo '<br/>';
-    // print_r($_FILES);
-    // print_r($uploadDir);
-    // echo '<br/>';
-    // print_r($uploadedFileNewFullPath);
-    //print "</pre>";               
+             
 } else {
     $msg = "Wrong password!";
 }
