@@ -18,11 +18,15 @@
       </div>
     
       <table id="table" class="table table-striped table-bordered" cellspacing="0" width="100%"></table>
-      <input type="file" id="file-picker" name="file-picker"/>
-      <button>Upload file</button>
+      <!--<input type="file" id="file-picker" name="file-picker"/>-->
+      <button class="file-upload btn btn-primary">Upload file</button>
     
     </div>
-    
+    <form action="upload.php" method="post" enctype="multipart/form-data">
+      <input type="password" name="password"/>
+      <input type="file" name="file"/>
+      <button>Send</button>
+    </form>
     
     <div class="modal fade" id="action-modal">
       <div class="modal-dialog">
@@ -38,6 +42,7 @@
             <form id="action-form" action="download.php"  method="POST">
               <p>Enter password:</p>
               <input type="hidden" id="action-file" name="file"></input>
+              
               <input type="password" id="action-password" name="password"></input>
               <input type="hidden" id="action-type" name="action"></input>
             </form>

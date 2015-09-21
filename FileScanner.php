@@ -12,7 +12,6 @@ class FileScanner
 	{
 		$this->dir = Config::$workDir;
 		$this->allowedFileTypes = Config::$allowedFileTypes;
-		//echo $this->dir;
 	}
 	
 	public function getFiles($argDir)

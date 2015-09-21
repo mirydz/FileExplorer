@@ -56,10 +56,12 @@ function populateTable(files) {
  
 function attachEvents() {
     $('.file-download').on('click', function prepareDownloadModal() {
+        $('#file-picker').remove();
         var fileName = $(this).text();
         $('#modal-action-type').text("download");
         $('#current-file').text(fileName);
         $('#action-button').attr("data-action", "download").text("Download");
+        $('#action-password').val("");
         
         $('#action-form').attr('action', 'download.php');
         $('#action-file').val(fileName);
@@ -69,6 +71,8 @@ function attachEvents() {
     });
     
     $('.file-delete').on("click", function prepareDeleteModal() {
+        $('#action-password').val("");
+        $('#file-picker').remove();
         var fileName = $(this).parents("tr").find(".file-download").text()
         $('#modal-action-type').text("delete");
         $('#current-file').text(fileName);
@@ -81,9 +85,25 @@ function attachEvents() {
         $('#action-modal').modal('show');
     });
     
+    $('.file-upload').on("click", function prepareUploadModal() {
+        $('#action-password').val("");
+        $('#file-picker').remove();
+        $('#modal-action-type').text("upload");
+        $('#current-file').text("");
+        var fileInput = '<input type="file" id="file-picker" name="file-upload"/>';
+        $('#action-form').prepend(fileInput);
+        $('#action-button').attr("data-action", "upload").text("Upload");
+        
+        $('#action-form').attr('action', 'upload.php');
+        $('#action-file').val("");
+        $('#action-type').val("upload");
+        
+        $('#action-modal').modal('show');
+    });
+    
     $('#action-button').on('click', function() {
         submitRequest();
-        $('action-password').val("");
+        $('#action-password').val("");
         $('#action-modal').modal('hide');
     });
 }
@@ -93,9 +113,12 @@ function submitRequest() {
     var action = $('#action-type').val()
     
     if (action === 'download') {
+       $('#file-picker').remove();     
         $form.submit();
-    }
-    else {
+    } else if (action === 'upload') {
+         $form.submit();
+    } else if (action === 'delete') {
+        $('#file-picker').remove();  
         var url = $form.attr("action");
         var data = $form.serialize();
         
